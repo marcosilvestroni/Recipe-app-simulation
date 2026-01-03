@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { Area, Category, Ingredient, Recipe } from '../types';
+import type { Area, Category, Ingredient, Recipe } from '../types';
 
 interface ListResponse<T> {
     meals: T[];

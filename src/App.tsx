@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Provider, useDispatch, useSelector } from 'react-redux';
+import React, { useState, useEffect } from 'react';
+import { Provider } from 'react-redux';
 import { store } from './store/store';
 import { GlobalStyle } from './styles/GlobalStyle';
 import { Container } from './styles/shared';
@@ -7,7 +7,7 @@ import { StepWizard } from './components/StepWizard';
 import { PreferenceForm } from './components/PreferenceForm';
 import { RecommendationCard } from './components/RecommendationCard';
 import { HistoryList } from './components/HistoryList';
-import { HistoryItem, Recipe } from './types';
+import type { HistoryItem, Recipe } from './types';
 import { 
   useLazyGetRecipesByAreaQuery, 
   useLazyGetRecipesByCategoryQuery, 
@@ -107,9 +107,8 @@ const RecipeApp: React.FC = () => {
       
       // Intersect
       const intersection = areaRecipes.filter(r1 => secondSet.some(r2 => r2.idMeal === r1.idMeal));
-      
-      const candidates = intersection.length > 0 ? intersection : areaRecipes; // Fallback to area if strict match fails? Or empty?
-      // Strict match is better UX for "recommender", but if empty handling is needed.
+
+      // Fallback to area if strict match fails? Or empty?
       // Let's assume strict for now.
       
       if (intersection.length === 0) {

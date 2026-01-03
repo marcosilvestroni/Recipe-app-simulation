@@ -1,5 +1,5 @@
 import React from 'react';
-import { HistoryItem } from '../types';
+import type { HistoryItem } from '../types';
 import { Heading } from '../styles/shared';
 import {
   HistoryGrid,

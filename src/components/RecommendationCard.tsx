@@ -1,5 +1,5 @@
 import React from 'react';
-import { Recipe } from '../types';
+import type { Recipe } from '../types';
 import { Button, Heading } from '../styles/shared';
 import {
   CardContainer,

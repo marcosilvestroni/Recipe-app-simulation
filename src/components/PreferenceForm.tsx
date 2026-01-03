@@ -42,28 +42,25 @@ export const PreferenceForm: React.FC<PreferenceFormProps> = ({
   const { data: categories = [] } = useGetCategoriesQuery();
   const { data: ingredients = [] } = useGetIngredientsQuery();
 
-  const [ingredientTerm, setIngredientTerm] = useState('');
-  const [filteredIngredients, setFilteredIngredients] = useState<typeof ingredients>([]);
-
-  // Filter ingredients locally
+  // Initialize with the prop value if present
+  const [ingredientTerm, setIngredientTerm] = useState(preferences.categoryOrIngredient || '');
+  
+  // Update local term if parent resets it or coming back
   useEffect(() => {
-    if (ingredientTerm.trim() === '') {
-      setFilteredIngredients([]);
-      return;
-    }
-    const term = ingredientTerm.toLowerCase();
-    const matches = ingredients
-      .filter((i) => i.strIngredient.toLowerCase().includes(term))
-      .slice(0, 10);
-    setFilteredIngredients(matches);
+      // Only sync if they differ to avoid loops, and strictly when we have a chosen ingredient
+      if (preferences.strategy === 'ingredient' && preferences.categoryOrIngredient && ingredientTerm !== preferences.categoryOrIngredient) {
+          // eslint-disable-next-line react-hooks/set-state-in-effect
+          setIngredientTerm(preferences.categoryOrIngredient);
+      }
+  }, [preferences.strategy, preferences.categoryOrIngredient, ingredientTerm]);
+
+  const filteredIngredients = React.useMemo(() => {
+      if (ingredientTerm.trim() === '') return [];
+      const term = ingredientTerm.toLowerCase();
+      return ingredients
+        .filter((i) => i.strIngredient.toLowerCase().includes(term))
+        .slice(0, 10);
   }, [ingredientTerm, ingredients]);
-
-  // Sync internal state if coming back
-  useEffect(() => {
-    if (preferences.strategy === 'ingredient' && preferences.categoryOrIngredient) {
-      setIngredientTerm(preferences.categoryOrIngredient);
-    }
-  }, [preferences.strategy, preferences.categoryOrIngredient]);
 
 
   if (step === 1) {
@@ -157,7 +154,6 @@ export const PreferenceForm: React.FC<PreferenceFormProps> = ({
                     onClick={() => {
                         onUpdate({ categoryOrIngredient: ing.strIngredient });
                         setIngredientTerm(ing.strIngredient);
-                        setFilteredIngredients([]);
                     }}
                   >
                     {ing.strIngredient}
