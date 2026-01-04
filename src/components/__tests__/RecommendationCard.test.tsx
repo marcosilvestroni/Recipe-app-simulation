@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import { RecommendationCard } from './RecommendationCard';
-import { Recipe } from '../types';
+import { RecommendationCard } from '../RecommendationCard';
+import type { Recipe } from '../../types';
 import { describe, it, expect, vi } from 'vitest';
 
 const mockRecipe: Recipe = {
