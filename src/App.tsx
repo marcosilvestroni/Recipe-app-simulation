@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Provider } from 'react-redux';
-import { store } from './store/store';
+import { store,  } from './store/store';
+import { setStep, updatePreferences, resetForm } from './store/formSlice';
 import { GlobalStyle } from './styles/GlobalStyle';
 import { Container } from './styles/shared';
 import { StepWizard } from './components/StepWizard';
@@ -13,24 +14,14 @@ import {
   useLazyGetRecipesByCategoryQuery, 
   useLazyGetRecipesByIngredientQuery 
 } from './api/recipeApi';
+import { useAppDispatch, useAppSelector } from './store/hooks';
 
-const STORAGE_KEY_HISTORY = 'recipe_app_history';
 
 const RecipeApp: React.FC = () => {
-  const [step, setStep] = useState(1);
-  const [preferences, setPreferences] = useState<{
-    area: string;
-    categoryOrIngredient: string;
-    strategy: 'category' | 'ingredient';
-  }>({
-    area: '',
-    categoryOrIngredient: '',
-    strategy: 'category',
-  });
+  const dispatch = useAppDispatch();
+  const { step, preferences } = useAppSelector((state) => state.form);
   
   const [recommendation, setRecommendation] = useState<Recipe | null>(null);
-  const [history, setHistory] = useState<HistoryItem[]>([]);
-  
   // RTK Query hooks
   const [triggerArea] = useLazyGetRecipesByAreaQuery();
   const [triggerCategory] = useLazyGetRecipesByCategoryQuery();
@@ -38,49 +29,39 @@ const RecipeApp: React.FC = () => {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  // Load history
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY_HISTORY);
-      if (stored) {
-        setHistory(JSON.parse(stored));
-      }
-    } catch (e) {
-      console.error('Failed to load history', e);
-    }
-  }, []);
-
   const saveHistoryItem = (liked: boolean) => {
     if (!recommendation) return;
     
-    const newItem: HistoryItem = {
-      id: crypto.randomUUID(),
-      recipeId: recommendation.idMeal,
-      title: recommendation.strMeal,
-      image: recommendation.strMealThumb,
-      timestamp: Date.now(),
-      liked,
-      preferences: {
-        area: preferences.area,
-        categoryOrIngredient: preferences.categoryOrIngredient
-      }
-    };
-    
-    setHistory(prev => {
-      const next = [newItem, ...prev];
-      localStorage.setItem(STORAGE_KEY_HISTORY, JSON.stringify(next));
-      return next;
+    import('./constants').then(({ STORAGE_KEY_HISTORY, HISTORY_UPDATED_EVENT }) => {
+        const newItem: HistoryItem = {
+            id: crypto.randomUUID(),
+            recipeId: recommendation.idMeal,
+            title: recommendation.strMeal,
+            image: recommendation.strMealThumb,
+            timestamp: Date.now(),
+            liked,
+            preferences: {
+                area: preferences.area,
+                categoryOrIngredient: preferences.categoryOrIngredient
+            }
+        };
+
+        const stored = localStorage.getItem(STORAGE_KEY_HISTORY);
+        const prev = stored ? JSON.parse(stored) : [];
+        const next = [newItem, ...prev];
+        localStorage.setItem(STORAGE_KEY_HISTORY, JSON.stringify(next));
+        
+        window.dispatchEvent(new Event(HISTORY_UPDATED_EVENT));
     });
 
     // Reset for new search or keep recommending?
     // Requirement says "display History section", implies staying on page or resetting.
-    resetWizard(); 
+    resetWizard();  
   };
   
   const resetWizard = () => {
       setRecommendation(null);
-      setStep(1);
-      setPreferences({ area: '', categoryOrIngredient: '', strategy: 'category' });
+      dispatch(resetForm());
   };
 
   const getRecommendation = async () => {
@@ -133,7 +114,7 @@ const RecipeApp: React.FC = () => {
       const data = await response.json();
       if (data.meals && data.meals[0]) {
           setRecommendation(data.meals[0]);
-          setStep(3); // Show result
+          dispatch(setStep(3)); // Show result
       }
       
     } catch (e) {
@@ -157,12 +138,12 @@ const RecipeApp: React.FC = () => {
            <PreferenceForm
              step={step}
              preferences={preferences}
-             onUpdate={(updates) => setPreferences(prev => ({ ...prev, ...updates }))}
+             onUpdate={(updates) => dispatch(updatePreferences(updates))}
              onNext={() => {
-               if (step === 1) setStep(2);
+               if (step === 1) dispatch(setStep(2));
                else getRecommendation();
              }}
-             onBack={() => setStep(step - 1)}
+             onBack={() => dispatch(setStep(step - 1))}
            />
         </StepWizard>
       )}
@@ -176,7 +157,7 @@ const RecipeApp: React.FC = () => {
         />
       )}
       
-      <HistoryList history={history} />
+      <HistoryList />
     </Container>
   );
 };

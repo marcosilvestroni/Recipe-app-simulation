@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import type { HistoryItem } from '../types';
 import { Heading } from '../styles/shared';
+import { STORAGE_KEY_HISTORY, HISTORY_UPDATED_EVENT } from '../constants';
 import {
   HistoryGrid,
   HistoryCard,
@@ -11,11 +12,37 @@ import {
 } from '../styles/components/HistoryList.styles';
 
 
-interface HistoryListProps {
-  history: HistoryItem[];
-}
+export const HistoryList: React.FC = () => {
+  const [history, setHistory] = useState<HistoryItem[]>(() => {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY_HISTORY);
+      return stored ? JSON.parse(stored) : [];
+    } catch (e) {
+      console.error('Failed to load history', e);
+      return [];
+    }
+  });
 
-export const HistoryList: React.FC<HistoryListProps> = ({ history }) => {
+  const loadHistory = () => {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY_HISTORY);
+      if (stored) {
+        setHistory(JSON.parse(stored));
+      }
+    } catch (e) {
+      console.error('Failed to load history', e);
+    }
+  };
+
+  useEffect(() => {
+    const handleUpdate = () => loadHistory();
+    window.addEventListener(HISTORY_UPDATED_EVENT, handleUpdate);
+    
+    return () => {
+      window.removeEventListener(HISTORY_UPDATED_EVENT, handleUpdate);
+    };
+  }, []);
+
   if (history.length === 0) return null;
 
   return (
