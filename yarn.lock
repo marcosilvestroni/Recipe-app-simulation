@@ -3143,6 +3143,43 @@ __metadata:
   languageName: node
   linkType: hard
 
+"recipe-matcher@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "recipe-matcher@workspace:."
+  dependencies:
+    "@eslint/js": "npm:^9.39.1"
+    "@exodus/bytes": "npm:^1.8.0"
+    "@reduxjs/toolkit": "npm:^2.11.2"
+    "@testing-library/dom": "npm:^10.4.1"
+    "@testing-library/jest-dom": "npm:^6.9.1"
+    "@testing-library/react": "npm:^16.3.1"
+    "@types/jsdom": "npm:^27"
+    "@types/node": "npm:^24.10.1"
+    "@types/react": "npm:^19.2.5"
+    "@types/react-dom": "npm:^19.2.3"
+    "@types/styled-components": "npm:^5.1.36"
+    "@vitejs/plugin-react": "npm:^5.1.1"
+    "@vitest/coverage-v8": "npm:^4.0.16"
+    eslint: "npm:^9.39.1"
+    eslint-plugin-react-hooks: "npm:^7.0.1"
+    eslint-plugin-react-refresh: "npm:^0.4.24"
+    globals: "npm:^16.5.0"
+    happy-dom: "npm:^20.0.11"
+    jsdom: "npm:^27.4.0"
+    react: "npm:^19.2.0"
+    react-dom: "npm:^19.2.0"
+    react-redux: "npm:^9.2.0"
+    styled-components: "npm:^6.1.19"
+    typescript: "npm:~5.9.3"
+    typescript-eslint: "npm:^8.46.4"
+    vite: "npm:^7.2.4"
+    vitest: "npm:^4.0.16"
+  dependenciesMeta:
+    "@exodus/bytes@1.8.0":
+      unplugged: true
+  languageName: unknown
+  linkType: soft
+
 "redent@npm:^3.0.0":
   version: 3.0.0
   resolution: "redent@npm:3.0.0"
@@ -3383,43 +3420,6 @@ __metadata:
   checksum: 10c0/7bda1fc4c197e3c6ff17de1b8b2c20e60af81b63a52cb32ec5a5d67a20a7d42651e2cb34ebe93833c5a2a084377e17455854fee3e21e7925c64a51b6a52b0faf
   languageName: node
   linkType: hard
-
-"spatial-tyson@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "spatial-tyson@workspace:."
-  dependencies:
-    "@eslint/js": "npm:^9.39.1"
-    "@exodus/bytes": "npm:^1.8.0"
-    "@reduxjs/toolkit": "npm:^2.11.2"
-    "@testing-library/dom": "npm:^10.4.1"
-    "@testing-library/jest-dom": "npm:^6.9.1"
-    "@testing-library/react": "npm:^16.3.1"
-    "@types/jsdom": "npm:^27"
-    "@types/node": "npm:^24.10.1"
-    "@types/react": "npm:^19.2.5"
-    "@types/react-dom": "npm:^19.2.3"
-    "@types/styled-components": "npm:^5.1.36"
-    "@vitejs/plugin-react": "npm:^5.1.1"
-    "@vitest/coverage-v8": "npm:^4.0.16"
-    eslint: "npm:^9.39.1"
-    eslint-plugin-react-hooks: "npm:^7.0.1"
-    eslint-plugin-react-refresh: "npm:^0.4.24"
-    globals: "npm:^16.5.0"
-    happy-dom: "npm:^20.0.11"
-    jsdom: "npm:^27.4.0"
-    react: "npm:^19.2.0"
-    react-dom: "npm:^19.2.0"
-    react-redux: "npm:^9.2.0"
-    styled-components: "npm:^6.1.19"
-    typescript: "npm:~5.9.3"
-    typescript-eslint: "npm:^8.46.4"
-    vite: "npm:^7.2.4"
-    vitest: "npm:^4.0.16"
-  dependenciesMeta:
-    "@exodus/bytes@1.8.0":
-      unplugged: true
-  languageName: unknown
-  linkType: soft
 
 "ssri@npm:^13.0.0":
   version: 13.0.0
