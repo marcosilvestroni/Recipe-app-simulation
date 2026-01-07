@@ -3,8 +3,8 @@ import {
   useGetAreasQuery, 
   useGetCategoriesQuery, 
   useGetIngredientsQuery 
-} from '../api/recipeApi';
-import { Button, Grid, Heading, Input, Subheading } from '../styles/shared';
+} from '../../api/recipeApi';
+import { Button, Grid, Heading, Input, Subheading } from '../../styles/shared';
 import { 
   FormContainer, 
   ButtonGroup, 
@@ -12,7 +12,7 @@ import {
   SuggestionsList, 
   SuggestionItem, 
   SearchContainer 
-} from '../styles/components/PreferenceForm.styles';
+} from './styles';
 
 
 interface PreferenceFormProps {
