@@ -1,16 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import type { HistoryItem } from '../../types';
-import { Heading } from '../../styles/shared';
-import { STORAGE_KEY_HISTORY, HISTORY_UPDATED_EVENT } from '../../constants';
+import React, { useEffect, useState } from "react";
+import type { HistoryItem } from "../../types";
+import { Heading } from "../../styles/shared";
+import { STORAGE_KEY_HISTORY, HISTORY_UPDATED_EVENT } from "../../constants";
 import {
   HistoryGrid,
   HistoryCard,
   HistoryHeader,
   Thumbnail,
   MetaInfo,
-  Title
-} from './styles';
-
+  Title,
+} from "./styles";
 
 export const HistoryList: React.FC = () => {
   const [history, setHistory] = useState<HistoryItem[]>(() => {
@@ -18,7 +17,7 @@ export const HistoryList: React.FC = () => {
       const stored = localStorage.getItem(STORAGE_KEY_HISTORY);
       return stored ? JSON.parse(stored) : [];
     } catch (e) {
-      console.error('Failed to load history', e);
+      console.error("Failed to load history", e);
       return [];
     }
   });
@@ -30,14 +29,14 @@ export const HistoryList: React.FC = () => {
         setHistory(JSON.parse(stored));
       }
     } catch (e) {
-      console.error('Failed to load history', e);
+      console.error("Failed to load history", e);
     }
   };
 
   useEffect(() => {
     const handleUpdate = () => loadHistory();
     window.addEventListener(HISTORY_UPDATED_EVENT, handleUpdate);
-    
+
     return () => {
       window.removeEventListener(HISTORY_UPDATED_EVENT, handleUpdate);
     };
@@ -46,25 +45,25 @@ export const HistoryList: React.FC = () => {
   if (history.length === 0) return null;
 
   return (
-    <div style={{ marginTop: '4rem' }}>
-      <Heading style={{ fontSize: '1.75rem' }}>History</Heading>
+    <div style={{ marginTop: "4rem" }}>
+      <Heading style={{ fontSize: "1.75rem" }}>History</Heading>
       <HistoryGrid>
         {history.map((item) => (
           <HistoryCard key={item.id}>
             <HistoryHeader>
-               <Thumbnail src={item.image} alt={item.title} />
-               <div style={{ flex: 1, minWidth: 0 }}>
-                 <Title>{item.title}</Title>
-                 <small style={{ color: 'var(--color-text-light)' }}>
-                   {new Date(item.timestamp).toLocaleDateString()}
-                 </small>
-               </div>
-               <span style={{ fontSize: '1.25rem' }}>
-                 {item.liked ? '👍' : '👎'}
-               </span>
+              <Thumbnail src={item.image} alt={item.title} />
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <Title>{item.title}</Title>
+                <small style={{ color: "var(--color-text-light)" }}>
+                  {new Date(item.timestamp).toLocaleDateString()}
+                </small>
+              </div>
+              <span style={{ fontSize: "1.25rem" }}>
+                {item.liked ? "👍" : "👎"}
+              </span>
             </HistoryHeader>
             <MetaInfo>
-                {item.preferences.area} • {item.preferences.categoryOrIngredient}
+              {item.preferences.area} • {item.preferences.categoryOrIngredient}
             </MetaInfo>
           </HistoryCard>
         ))}

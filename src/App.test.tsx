@@ -46,7 +46,7 @@ describe("RecipeApp", () => {
     render(
       <Provider store={store}>
         <RecipeApp />
-      </Provider>
+      </Provider>,
     );
 
     expect(screen.getByText("RecipeMatcher")).toBeInTheDocument();
@@ -61,7 +61,7 @@ describe("RecipeApp", () => {
     render(
       <Provider store={store}>
         <RecipeApp />
-      </Provider>
+      </Provider>,
     );
 
     // Step 1 -> 2
@@ -91,7 +91,7 @@ describe("RecipeApp", () => {
     render(
       <Provider store={store}>
         <RecipeApp />
-      </Provider>
+      </Provider>,
     );
 
     // Navigate to 3

@@ -47,7 +47,7 @@ export const RecommendationCard: React.FC<RecommendationCardProps> = ({
 
   const getRecommendation = useCallback(async () => {
     setIsLoading(true);
-    setRecipe(null); // Clear previous while loading? Optional.
+    setRecipe(null);
     setNoResults(false);
     try {
       const { data: areaRecipes = [] } = await triggerArea(preferences.area);
@@ -55,19 +55,19 @@ export const RecommendationCard: React.FC<RecommendationCardProps> = ({
 
       if (preferences.strategy === "category") {
         const { data } = await triggerCategory(
-          preferences.categoryOrIngredient
+          preferences.categoryOrIngredient,
         );
         secondSet = data || [];
       } else {
         const { data } = await triggerIngredient(
-          preferences.categoryOrIngredient
+          preferences.categoryOrIngredient,
         );
         secondSet = data || [];
       }
 
       // Intersect
       const intersection = areaRecipes.filter((r1) =>
-        secondSet.some((r2) => r2.idMeal === r1.idMeal)
+        secondSet.some((r2) => r2.idMeal === r1.idMeal),
       );
 
       if (intersection.length === 0) {
@@ -79,7 +79,6 @@ export const RecommendationCard: React.FC<RecommendationCardProps> = ({
       const random =
         intersection[Math.floor(Math.random() * intersection.length)];
 
-      // Fetch full details
       const { data: fullRecipe } = await triggerLookup(random.idMeal);
 
       if (fullRecipe) {
@@ -87,8 +86,6 @@ export const RecommendationCard: React.FC<RecommendationCardProps> = ({
       }
     } catch (e) {
       console.error(e);
-      // Fallback or just stay in loading?
-      // Ideally show error state but for now let's just stop loading.
     } finally {
       setIsLoading(false);
     }
@@ -104,7 +101,7 @@ export const RecommendationCard: React.FC<RecommendationCardProps> = ({
   useEffect(() => {
     getRecommendation();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Only on mount/preferences change if we want? Logic says when step 3 mounts.
+  }, []);
 
   const handleFeedback = (liked: boolean) => {
     if (!recipe) return;
@@ -167,7 +164,7 @@ export const RecommendationCard: React.FC<RecommendationCardProps> = ({
     );
   }
 
-  if (!recipe) return null; // Should not happen if loading handled correctly
+  if (!recipe) return null;
 
   return (
     <CardContainer>

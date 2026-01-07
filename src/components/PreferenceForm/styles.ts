@@ -1,4 +1,4 @@
-import styled, { keyframes } from 'styled-components';
+import styled, { keyframes } from "styled-components";
 
 const fadeIn = keyframes`
   from { opacity: 0; transform: translateY(10px); }
@@ -14,7 +14,7 @@ export const ButtonGroup = styled.div`
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
-  
+
   &.space-between {
     justify-content: space-between;
   }
@@ -24,7 +24,7 @@ export const ToggleLabel = styled.label`
   margin-right: 1.5rem;
   font-size: 1.1rem;
   cursor: pointer;
-  
+
   input {
     margin-right: 0.5rem;
   }

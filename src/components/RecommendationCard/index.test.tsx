@@ -61,7 +61,7 @@ describe("RecommendationCard", () => {
 
   it("fetches and displays a recommendation on mount", async () => {
     render(
-      <RecommendationCard preferences={mockPreferences} onReset={() => {}} />
+      <RecommendationCard preferences={mockPreferences} onReset={() => {}} />,
     );
 
     // Should show loading first?
@@ -78,7 +78,7 @@ describe("RecommendationCard", () => {
 
   it("fetches new recommendation on feedback (Yes)", async () => {
     render(
-      <RecommendationCard preferences={mockPreferences} onReset={() => {}} />
+      <RecommendationCard preferences={mockPreferences} onReset={() => {}} />,
     );
     await waitFor(() => screen.getByText("Pasta 1"));
 
@@ -93,7 +93,7 @@ describe("RecommendationCard", () => {
 
   it("saves to history on feedback", async () => {
     render(
-      <RecommendationCard preferences={mockPreferences} onReset={() => {}} />
+      <RecommendationCard preferences={mockPreferences} onReset={() => {}} />,
     );
     await waitFor(() => screen.getByText("Pasta 1"));
 
@@ -114,7 +114,7 @@ describe("RecommendationCard", () => {
     const onReset = vi.fn();
 
     render(
-      <RecommendationCard preferences={mockPreferences} onReset={onReset} />
+      <RecommendationCard preferences={mockPreferences} onReset={onReset} />,
     );
 
     await waitFor(() => {
@@ -130,7 +130,7 @@ describe("RecommendationCard", () => {
   it("calls onReset when Modify Selection is clicked", async () => {
     const onReset = vi.fn();
     render(
-      <RecommendationCard preferences={mockPreferences} onReset={onReset} />
+      <RecommendationCard preferences={mockPreferences} onReset={onReset} />,
     );
     await waitFor(() => screen.getByText("Pasta 1"));
 

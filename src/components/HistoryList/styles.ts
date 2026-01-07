@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { Card } from '../../styles/shared';
+import styled from "styled-components";
+import { Card } from "../../styles/shared";
 
 export const HistoryGrid = styled.div`
   display: grid;

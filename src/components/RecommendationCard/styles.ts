@@ -1,4 +1,4 @@
-import styled, { keyframes } from 'styled-components';
+import styled, { keyframes } from "styled-components";
 
 const scaleIn = keyframes`
   from { transform: scale(0.9); opacity: 0; }
@@ -22,7 +22,7 @@ export const ContentGrid = styled.div`
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
-    
+
     img {
       order: -1;
       height: 200px;

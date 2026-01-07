@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const Container = styled.div`
   max-width: 800px;
@@ -12,30 +12,40 @@ export const Card = styled.div`
   box-shadow: var(--shadow-md);
   padding: 2rem;
   margin-bottom: 2rem;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 `;
 
-export const Button = styled.button<{ $variant?: 'primary' | 'secondary' | 'outline' }>`
+export const Button = styled.button<{
+  $variant?: "primary" | "secondary" | "outline";
+}>`
   padding: 0.75rem 1.5rem;
   border-radius: var(--radius-md);
   font-weight: 600;
   font-size: 1rem;
-  
-  ${props => props.$variant === 'primary' && `
+
+  ${(props) =>
+    props.$variant === "primary" &&
+    `
     background-color: var(--color-primary);
     color: white;
     &:hover { background-color: var(--color-primary-dark); }
     &:disabled { background-color: #ccc; cursor: not-allowed; }
   `}
 
-  ${props => props.$variant === 'secondary' && `
+  ${(props) =>
+    props.$variant === "secondary" &&
+    `
     background-color: transparent;
     border: 2px solid var(--color-primary);
     color: var(--color-primary);
     &:hover { background-color: rgba(255, 107, 107, 0.1); }
   `}
 
-  ${props => (!props.$variant || props.$variant === 'outline') && `
+  ${(props) =>
+    (!props.$variant || props.$variant === "outline") &&
+    `
     background: transparent;
     border: 1px solid #ddd;
     color: var(--color-text);
