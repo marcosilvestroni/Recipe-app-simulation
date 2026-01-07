@@ -1,4 +1,4 @@
-# Spatial Tyson - RecipeMatcher
+# RecipeMatcher
 
 A modern, responsive React application designed to help users discover new meal ideas based on their preferences. Built with performance, aesthetics, and user experience in mind.
 
