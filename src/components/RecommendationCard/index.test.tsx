@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import { RecommendationCard } from '../RecommendationCard';
+import { RecommendationCard } from './index';
 import type { Recipe } from '../../types';
 import { describe, it, expect, vi } from 'vitest';
 

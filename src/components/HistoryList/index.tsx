@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import type { HistoryItem } from '../types';
-import { Heading } from '../styles/shared';
-import { STORAGE_KEY_HISTORY, HISTORY_UPDATED_EVENT } from '../constants';
+import type { HistoryItem } from '../../types';
+import { Heading } from '../../styles/shared';
+import { STORAGE_KEY_HISTORY, HISTORY_UPDATED_EVENT } from '../../constants';
 import {
   HistoryGrid,
   HistoryCard,
@@ -9,7 +9,7 @@ import {
   Thumbnail,
   MetaInfo,
   Title
-} from '../styles/components/HistoryList.styles';
+} from './styles';
 
 
 export const HistoryList: React.FC = () => {

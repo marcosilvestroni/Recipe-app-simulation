@@ -1,5 +1,5 @@
 import React from 'react';
-import { WizardContainer, ProgressBar, ProgressStep } from '../styles/components/StepWizard.styles';
+import { WizardContainer, ProgressBar, ProgressStep } from './styles';
 
 
 interface StepWizardProps {
@@ -13,7 +13,7 @@ export const StepWizard: React.FC<StepWizardProps> = ({ currentStep, totalSteps,
     <WizardContainer>
       <ProgressBar>
         {Array.from({ length: totalSteps }).map((_, idx) => (
-          <ProgressStep key={idx} $active={idx + 1 <= currentStep} />
+          <ProgressStep key={idx} $active={idx + 1 <= currentStep} data-testid={`step-${idx + 1}`} />
         ))}
       </ProgressBar>
       <div>

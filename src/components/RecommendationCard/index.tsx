@@ -1,6 +1,6 @@
 import React from 'react';
-import type { Recipe } from '../types';
-import { Button, Heading } from '../styles/shared';
+import type { Recipe } from '../../types';
+import { Button, Heading } from '../../styles/shared';
 import {
   CardContainer,
   ContentGrid,
@@ -11,7 +11,7 @@ import {
   RecipeImage,
   FeedbackSection,
   FeedbackButtons
-} from '../styles/components/RecommendationCard.styles';
+} from './styles';
 
 
 interface RecommendationCardProps {
