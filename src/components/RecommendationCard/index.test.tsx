@@ -1,53 +1,142 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import { RecommendationCard } from './index';
-import type { Recipe } from '../../types';
-import { describe, it, expect, vi } from 'vitest';
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { RecommendationCard } from "./index";
+import { describe, it, expect, vi, beforeEach, type Mock } from "vitest";
 
-const mockRecipe: Recipe = {
-  idMeal: '12345',
-  strMeal: 'Test Pasta',
-  strMealThumb: 'https://example.com/image.jpg',
-  strCategory: 'Pasta',
-  strArea: 'Italian',
-  strInstructions: 'Boil water. Cook pasta. Eat.',
-  strYoutube: 'https://youtube.com/watch?v=123',
-};
+// Mock API hooks
+const useLazyGetRecipesByAreaQueryMock = vi.fn();
+const useLazyGetRecipesByCategoryQueryMock = vi.fn();
+const useLazyGetRecipesByIngredientQueryMock = vi.fn();
 
-describe('RecommendationCard', () => {
-  it('renders recipe details correctly', () => {
-    const onNewIdea = vi.fn();
-    const onFeedback = vi.fn();
+vi.mock("../../api/recipeApi", () => ({
+  useLazyGetRecipesByAreaQuery: () => [useLazyGetRecipesByAreaQueryMock],
+  useLazyGetRecipesByCategoryQuery: () => [
+    useLazyGetRecipesByCategoryQueryMock,
+  ],
+  useLazyGetRecipesByIngredientQuery: () => [
+    useLazyGetRecipesByIngredientQueryMock,
+  ],
+}));
 
-    render(
-      <RecommendationCard
-        recipe={mockRecipe}
-        onNewIdea={onNewIdea}
-        onFeedback={onFeedback}
-      />
-    );
+// Mock fetch for lookup
+global.fetch = vi.fn();
 
-    expect(screen.getByText('Test Pasta')).toBeInTheDocument();
-    expect(screen.getByText('Italian')).toBeInTheDocument();
-    expect(screen.getByText('Pasta')).toBeInTheDocument();
-    expect(screen.getByText(/Boil water/)).toBeInTheDocument();
+describe("RecommendationCard", () => {
+  const mockPreferences = {
+    area: "Italian",
+    categoryOrIngredient: "Pasta",
+    strategy: "category" as const,
+  };
+
+  const mockAreaRecipes = [
+    { idMeal: "1", strMeal: "Pasta 1" },
+    { idMeal: "2", strMeal: "Pasta 2" },
+  ];
+  const mockCategoryRecipes = [{ idMeal: "1", strMeal: "Pasta 1" }]; // Intersection is ID 1
+  const mockRecipeDetails = {
+    idMeal: "1",
+    strMeal: "Pasta 1",
+    strMealThumb: "img.jpg",
+    strArea: "Italian",
+    strCategory: "Pasta",
+    strInstructions: "Cook it",
+    strYoutube: "youtube.com",
+  };
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    // Setup default successful intersection
+    useLazyGetRecipesByAreaQueryMock.mockResolvedValue({
+      data: mockAreaRecipes,
+    });
+    useLazyGetRecipesByCategoryQueryMock.mockResolvedValue({
+      data: mockCategoryRecipes,
+    });
+
+    (global.fetch as Mock).mockResolvedValue({
+      json: async () => ({ meals: [mockRecipeDetails] }),
+    });
   });
 
-  it('calls feedback handlers', () => {
-    const onNewIdea = vi.fn();
-    const onFeedback = vi.fn();
-
+  it("fetches and displays a recommendation on mount", async () => {
     render(
-      <RecommendationCard
-        recipe={mockRecipe}
-        onNewIdea={onNewIdea}
-        onFeedback={onFeedback}
-      />
+      <RecommendationCard preferences={mockPreferences} onReset={() => {}} />
     );
 
-    fireEvent.click(screen.getByText(/Yes, I like it/i));
-    expect(onFeedback).toHaveBeenCalledWith(true);
+    // Should show loading first?
+    // We might not catch it if it's too fast, but we expect result eventually.
 
-    fireEvent.click(screen.getByText(/No, not for me/i));
-    expect(onFeedback).toHaveBeenCalledWith(false);
+    await waitFor(() => {
+      expect(screen.getByText("Pasta 1")).toBeInTheDocument();
+    });
+
+    expect(useLazyGetRecipesByAreaQueryMock).toHaveBeenCalledWith("Italian");
+    expect(useLazyGetRecipesByCategoryQueryMock).toHaveBeenCalledWith("Pasta");
+    expect(global.fetch).toHaveBeenCalledWith(
+      expect.stringContaining("lookup.php?i=1")
+    );
+  });
+
+  it("fetches new recommendation on feedback (Yes)", async () => {
+    render(
+      <RecommendationCard preferences={mockPreferences} onReset={() => {}} />
+    );
+    await waitFor(() => screen.getByText("Pasta 1"));
+
+    const yesBtn = screen.getByText(/Yes, I like it/i);
+    fireEvent.click(yesBtn);
+
+    // Should trigger new fetch
+    await waitFor(() => {
+      expect(useLazyGetRecipesByAreaQueryMock).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  it("saves to history on feedback", async () => {
+    render(
+      <RecommendationCard preferences={mockPreferences} onReset={() => {}} />
+    );
+    await waitFor(() => screen.getByText("Pasta 1"));
+
+    const dispatchEventSpy = vi.spyOn(window, "dispatchEvent");
+
+    fireEvent.click(screen.getByText(/Yes, I like it/i));
+
+    await waitFor(() => {
+      expect(dispatchEventSpy).toHaveBeenCalled();
+    });
+  });
+
+  it("handles no intersection found", async () => {
+    // No intersection
+    useLazyGetRecipesByCategoryQueryMock.mockResolvedValue({
+      data: [{ idMeal: "999" }],
+    });
+    const onReset = vi.fn();
+
+    render(
+      <RecommendationCard preferences={mockPreferences} onReset={onReset} />
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText(/No Matches Found/i)).toBeInTheDocument();
+    });
+
+    const resetBtn = screen.getByText(/Adjust Preferences/i);
+    fireEvent.click(resetBtn);
+
+    expect(onReset).toHaveBeenCalled();
+  });
+
+  it("calls onReset when Modify Selection is clicked", async () => {
+    const onReset = vi.fn();
+    render(
+      <RecommendationCard preferences={mockPreferences} onReset={onReset} />
+    );
+    await waitFor(() => screen.getByText("Pasta 1"));
+
+    const modifyBtn = screen.getByText(/Modify Selection/i);
+    fireEvent.click(modifyBtn);
+
+    expect(onReset).toHaveBeenCalled();
   });
 });
