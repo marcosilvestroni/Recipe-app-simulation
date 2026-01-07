@@ -1,73 +1,51 @@
-# React + TypeScript + Vite
+# Spatial Tyson - RecipeMatcher
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, responsive React application designed to help users discover new meal ideas based on their preferences. Built with performance, aesthetics, and user experience in mind.
 
-Currently, two official plugins are available:
+## 🚀 Key Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Smart Recipe Discovery**: Finding the perfect meal is easy with our two-step wizard.
+  1.  **Select Region**: Filter recipes by cuisine area (e.g., Italian, Japanese, Mexican).
+  2.  **Refine Search**: Narrow down results by choosing a specific Category (e.g., Seafood) or Main Ingredient (e.g., Chicken).
+- **Intersection Logic**: The app intelligently finds recipes that match _both_ your chosen area and your secondary criteria, ensuring precise recommendations.
+- **Instant Recommendations**: Get a random recipe recommendation that fits your criteria instantly.
+- **Interactive Feedback**:
+  - **Like/Dislike**: Rate recommendations to save them to your history.
+  - **New Idea**: Request a different recipe with the same criteria if the first one doesn't spark joy.
+- **Local History**: Your liked recipes and search history are persisted locally, so you never lose track of a great find.
+- **Premium UI/UX**:
+  - **Glassmorphism Design**: extensive use of translucent backgrounds and blurs for a modern look.
+  - **Responsive Layout**: Optimized for both desktop and mobile devices.
+  - **Micro-animations**: Subtle interactions to enhance engagement.
 
-## React Compiler
+## 🛠 Tech Stack & Peculiarities
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+This project is built using a modern frontend stack with a focus on type safety and state management.
 
-## Expanding the ESLint configuration
+- **React 19**: Leveraging the latest React features for efficient rendering.
+- **TypeScript**: Fully typed codebase for robustness and developer experience.
+- **Redux Toolkit (RTK) & RTK Query**:
+  - **State Management**: Centralized store for form state and user preferences using slices.
+  - **Data Fetching**: All API interactions with TheMealDB are handled via RTK Query. This includes a custom `useLazyLookupRecipeQuery` implementation to fetch detailed recipe info on demand, replacing standard `fetch` calls for better caching and request lifecycle management.
+- **Styled Components**: CSS-in-JS solution for scoped styling, theming, and dynamic styles based on props.
+- **Vite**: Next-generation frontend tooling for lightning-fast HMR and building.
+- **Testing**: Comprehensive test suite using **Vitest** and **React Testing Library**, ensuring component reliability and interaction correctness.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 📦 Getting Started
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+1.  **Install dependencies**:
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+    ```bash
+    yarn install
+    ```
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+2.  **Run development server**:
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+    ```bash
+    yarn dev
+    ```
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+3.  **Run tests**:
+    ```bash
+    yarn test
+    ```
