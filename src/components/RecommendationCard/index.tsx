@@ -5,6 +5,7 @@ import {
   useLazyGetRecipesByAreaQuery,
   useLazyGetRecipesByCategoryQuery,
   useLazyGetRecipesByIngredientQuery,
+  useLazyLookupRecipeQuery,
 } from "../../api/recipeApi";
 import type { HistoryItem } from "../../types";
 import { STORAGE_KEY_HISTORY, HISTORY_UPDATED_EVENT } from "../../constants";
@@ -42,6 +43,7 @@ export const RecommendationCard: React.FC<RecommendationCardProps> = ({
   const [triggerArea] = useLazyGetRecipesByAreaQuery();
   const [triggerCategory] = useLazyGetRecipesByCategoryQuery();
   const [triggerIngredient] = useLazyGetRecipesByIngredientQuery();
+  const [triggerLookup] = useLazyLookupRecipeQuery();
 
   const getRecommendation = useCallback(async () => {
     setIsLoading(true);
@@ -78,12 +80,10 @@ export const RecommendationCard: React.FC<RecommendationCardProps> = ({
         intersection[Math.floor(Math.random() * intersection.length)];
 
       // Fetch full details
-      const response = await fetch(
-        `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${random.idMeal}`
-      );
-      const data = await response.json();
-      if (data.meals && data.meals[0]) {
-        setRecipe(data.meals[0]);
+      const { data: fullRecipe } = await triggerLookup(random.idMeal);
+
+      if (fullRecipe) {
+        setRecipe(fullRecipe);
       }
     } catch (e) {
       console.error(e);
@@ -92,7 +92,13 @@ export const RecommendationCard: React.FC<RecommendationCardProps> = ({
     } finally {
       setIsLoading(false);
     }
-  }, [preferences, triggerArea, triggerCategory, triggerIngredient]);
+  }, [
+    preferences,
+    triggerArea,
+    triggerCategory,
+    triggerIngredient,
+    triggerLookup,
+  ]);
 
   // Initial fetch
   useEffect(() => {

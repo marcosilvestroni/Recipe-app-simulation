@@ -1,11 +1,12 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { RecommendationCard } from "./index";
-import { describe, it, expect, vi, beforeEach, type Mock } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 
 // Mock API hooks
 const useLazyGetRecipesByAreaQueryMock = vi.fn();
 const useLazyGetRecipesByCategoryQueryMock = vi.fn();
 const useLazyGetRecipesByIngredientQueryMock = vi.fn();
+const useLazyLookupRecipeQueryMock = vi.fn();
 
 vi.mock("../../api/recipeApi", () => ({
   useLazyGetRecipesByAreaQuery: () => [useLazyGetRecipesByAreaQueryMock],
@@ -15,10 +16,11 @@ vi.mock("../../api/recipeApi", () => ({
   useLazyGetRecipesByIngredientQuery: () => [
     useLazyGetRecipesByIngredientQueryMock,
   ],
+  useLazyLookupRecipeQuery: () => [useLazyLookupRecipeQueryMock],
 }));
 
-// Mock fetch for lookup
-global.fetch = vi.fn();
+// Mock fetch removal
+// global.fetch = vi.fn();
 
 describe("RecommendationCard", () => {
   const mockPreferences = {
@@ -52,8 +54,8 @@ describe("RecommendationCard", () => {
       data: mockCategoryRecipes,
     });
 
-    (global.fetch as Mock).mockResolvedValue({
-      json: async () => ({ meals: [mockRecipeDetails] }),
+    useLazyLookupRecipeQueryMock.mockResolvedValue({
+      data: mockRecipeDetails,
     });
   });
 
@@ -71,9 +73,7 @@ describe("RecommendationCard", () => {
 
     expect(useLazyGetRecipesByAreaQueryMock).toHaveBeenCalledWith("Italian");
     expect(useLazyGetRecipesByCategoryQueryMock).toHaveBeenCalledWith("Pasta");
-    expect(global.fetch).toHaveBeenCalledWith(
-      expect.stringContaining("lookup.php?i=1")
-    );
+    expect(useLazyLookupRecipeQueryMock).toHaveBeenCalledWith("1");
   });
 
   it("fetches new recommendation on feedback (Yes)", async () => {
